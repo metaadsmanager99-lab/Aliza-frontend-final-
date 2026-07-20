@@ -1,4 +1,3 @@
-// ⚠️ TUMHARA ASLI RENDER BACKEND URL (FIXED)
 const RENDER_BACKEND_URL = "https://aliza-trading-final-codes.onrender.com";
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -26,7 +25,7 @@ document.addEventListener("DOMContentLoaded", () => {
         tickerContainer.innerHTML = baseHTML + baseHTML; 
     }
 
-    // --- DROPDOWN LOGIC ---
+    // --- CLEAN DROPDOWN LOGIC ---
     const marketSelect = document.getElementById('marketType');
     const assetSelect = document.getElementById('assetPair');
     const assetsData = { 
@@ -123,26 +122,49 @@ document.addEventListener("DOMContentLoaded", () => {
         } catch (e) {}
     }
 
-    // --- SAFELY INIT VOICE ENGINE ---
+    // --- VOICE LOGIC (Audio Context Unlocker Fix) ---
+    function unlockAudio() {
+        // Play silent sound immediately on user click to unlock AudioContext in WebViews
+        if ('speechSynthesis' in window) {
+            const silent = new SpeechSynthesisUtterance('');
+            silent.volume = 0;
+            window.speechSynthesis.speak(silent);
+        }
+    }
+
     function speakSignal(direction) {
         try {
-            if ('speechSynthesis' in window && window.speechSynthesis) {
+            if ('speechSynthesis' in window) {
                 window.speechSynthesis.cancel();
                 const utterance = new SpeechSynthesisUtterance(direction === 'UP' ? 'Buy Now. Go Up' : 'Sell Now. Go Down');
                 utterance.pitch = 1.1;
+                utterance.rate = 1.0;
+                
                 const voices = window.speechSynthesis.getVoices();
-                const femaleVoice = voices.find(v => v.name.includes('Female') || v.name.includes('Zira'));
+                const femaleVoice = voices.find(v => v.name.includes('Female') || v.name.includes('Zira') || v.name.includes('Samantha'));
                 if (femaleVoice) utterance.voice = femaleVoice;
+                
                 window.speechSynthesis.speak(utterance);
             }
-        } catch (e) { console.log("Voice not supported"); }
+        } catch (e) { console.log("Voice issue:", e); }
     }
 
-    // --- BULLETPROOF SIGNAL GENERATION LOGIC ---
+    // Attempt to load voices early
+    if ('speechSynthesis' in window) {
+        window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+    }
+
+    // --- SIGNAL GENERATION & TIMEFRAME SYNC ENGINE ---
     const btnGen = document.getElementById('btnGen');
+    let syncTimer = null;
+    let countdownInterval = null;
+
     if (btnGen) {
         btnGen.addEventListener('click', async () => {
             
+            // Unlock audio context on user interaction
+            unlockAudio();
+
             // 🚨 Strict Validation
             if (!marketSelect.value) {
                 alert("⚠️ Please select a Market Category first!");
@@ -153,9 +175,12 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
             }
 
+            // Clear any active timers if user managed to click again
+            if(syncTimer) clearTimeout(syncTimer);
+            if(countdownInterval) clearInterval(countdownInterval);
+
             const scanner = document.getElementById('scanner');
             const resultBox = document.getElementById('resultBox');
-            const originalText = btnGen.innerText;
             
             // UI Update - Show scanning process
             btnGen.innerText = "SCANNING MARKET ⚡...";
@@ -170,18 +195,18 @@ document.addEventListener("DOMContentLoaded", () => {
                 const response = await fetch(`${RENDER_BACKEND_URL}/api/get_signal/${USER_ID}`);
                 const data = await response.json();
                 
-                // If limit reached or unauthorized
                 if (response.status !== 200) {
-                    alert("❌ ERROR: " + (data.message || data.error || "Access Denied. Contact Admin."));
-                    resetBtn(btnGen, originalText, scanner);
+                    alert("❌ ERROR: " + (data.message || data.error || "Access Denied."));
+                    resetBtn(btnGen, "GENERATE AI SIGNAL ⚡", scanner);
                     return;
                 }
 
-                // AI Success
+                // AI Success UI Reset
                 scanner.style.display = 'none';
                 resultBox.style.display = 'block';
-                resetBtn(btnGen, "GENERATE NEXT SIGNAL 🔄", scanner, false);
+                btnGen.style.display = 'none'; // Hide button completely while signal is active
                 
+                // Print Signal
                 const isUp = data.direction === 'UP';
                 document.getElementById('signalOutput').className = 'signal-text ' + (isUp ? 'signal-UP' : 'signal-DOWN');
                 document.getElementById('signalOutput').innerHTML = isUp ? 'CALL (UP) ⬆️' : 'PUT (DOWN) ⬇️';
@@ -191,18 +216,37 @@ document.addEventListener("DOMContentLoaded", () => {
                     document.getElementById('accBar').style.width = `${data.accuracy}%`;
                 }, 100);
                 
+                // Voice and Vibrate
                 if(tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred(isUp ? 'success' : 'warning');
                 speakSignal(data.direction);
 
+                // --- SMART SYNC TIMER ENGINE ---
+                const selectedSeconds = parseInt(document.getElementById('timeframe').value);
+                let timeLeft = selectedSeconds;
+                const timerSpan = document.getElementById('timerCountdown');
+                timerSpan.innerText = timeLeft;
+
+                countdownInterval = setInterval(() => {
+                    timeLeft--;
+                    timerSpan.innerText = timeLeft;
+                }, 1000);
+
+                syncTimer = setTimeout(() => {
+                    clearInterval(countdownInterval);
+                    resultBox.style.display = 'none';       // Hide signal
+                    btnGen.style.display = 'block';         // Bring button back
+                    resetBtn(btnGen, "GENERATE NEXT SIGNAL ⚡", scanner, true);
+                    
+                    if(tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
+                }, selectedSeconds * 1000); // Wait exactly the selected timeframe
+
             } catch (error) {
-                // Network or Render Sleep Error
-                alert("⚠️ NETWORK ERROR: The Render AI Server is sleeping. Please wait 30 seconds and try again.");
-                resetBtn(btnGen, originalText, scanner);
+                alert("⚠️ NETWORK ERROR: Server is sleeping. Try again in 30 seconds.");
+                resetBtn(btnGen, "GENERATE AI SIGNAL ⚡", scanner);
             }
         });
     }
 
-    // Helper function to reset button state
     function resetBtn(btn, text, scanner, hideScanner = true) {
         btn.innerText = text;
         btn.style.opacity = "1";
@@ -210,4 +254,4 @@ document.addEventListener("DOMContentLoaded", () => {
         if(hideScanner) scanner.style.display = 'none';
     }
 
-}); // End DOMContentLoaded
+});
