@@ -1,5 +1,5 @@
 // ⚠️ APNA RENDER URL YAHAN DAALNA
-const RENDER_BACKEND_URL = "https://metaadsmanager99-lab.onrender.com"; // Tumhara backend URL
+const RENDER_BACKEND_URL = "https://aliza-trading-final-codes.onrender.com"; // Tumhara backend URL
 
 let tg;
 try {
