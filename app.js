@@ -1,5 +1,5 @@
 // ⚠️ ENTER YOUR RENDER URL HERE
-const RENDER_BACKEND_URL = "https://your-backend.onrender.com";
+const RENDER_BACKEND_URL = "https://aliza-trading-final-codes.onrender.com";
 
 const tg = window.Telegram.WebApp;
 tg.expand();
