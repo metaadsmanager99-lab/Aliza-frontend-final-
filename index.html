@@ -69,8 +69,8 @@
                         <label>Market Category</label>
                         <select id="marketType">
                             <option value="" disabled selected>-- Select Market --</option>
-                            <option value="live">Live Market (Forex)</option>
-                            <option value="otc">OTC Market (Weekend)</option>
+                            <option value="live">Live Market</option>
+                            <option value="otc">OTC Market</option>
                         </select>
                     </div>
                     
@@ -84,13 +84,13 @@
                     <div class="input-group">
                         <label>Expiry Timeframe</label>
                         <select id="timeframe">
-                            <option value="5s">5 Seconds (Turbo)</option>
-                            <option value="15s">15 Seconds</option>
-                            <option value="1m">1 Minute</option>
+                            <option value="5">5 Seconds</option>
+                            <option value="15">15 Seconds</option>
+                            <option value="60">1 Minute</option>
                         </select>
                     </div>
                     
-                    <button class="btn-primary" id="btnGen">Generate AI Signal ⚡</button>
+                    <button class="btn-primary" id="btnGen">GENERATE AI SIGNAL ⚡</button>
                 </div>
 
                 <!-- SCANNER & RESULTS -->
@@ -106,6 +106,7 @@
                         <div class="accuracy-bar" id="accBar"></div>
                     </div>
                     <div class="accuracy" id="accuracyText">Confidence: 0%</div>
+                    <p style="font-size: 10px; color: var(--text-muted); margin-top: 10px;">Signal expires in <span id="timerCountdown">0</span>s</p>
                 </div>
             </div>
 
