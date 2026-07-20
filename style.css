@@ -1,0 +1,58 @@
+:root {
+    --bg-dark: #050505; --bg-card: rgba(20, 20, 25, 0.7);
+    --neon-pink: #ff007f; --neon-blue: #00f3ff;
+    --neon-green: #00ff66; --neon-red: #ff3333;
+    --text-main: #ffffff; --text-dim: #8b8b99;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Rajdhani', sans-serif; -webkit-tap-highlight-color: transparent; }
+body { background-color: var(--bg-dark); color: var(--text-main); overflow: hidden; display: flex; flex-direction: column; min-height: 100vh; background-image: radial-gradient(circle at 50% 0%, #1a0014 0%, var(--bg-dark) 70%); }
+
+/* --- LOGIN SCREEN --- */
+#login-screen { position: fixed; top:0; left:0; width:100%; height:100%; background: var(--bg-dark); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 10000; }
+.login-box { background: var(--bg-card); backdrop-filter: blur(10px); padding: 30px 20px; border-radius: 16px; border: 1px solid var(--neon-pink); width: 90%; max-width: 400px; text-align: center; box-shadow: 0 0 30px rgba(255, 0, 127, 0.2); }
+.login-title { font-family: 'Orbitron', sans-serif; font-size: 28px; font-weight: 900; letter-spacing: 2px; }
+.login-title span { color: var(--neon-pink); }
+input { width: 100%; background: rgba(0,0,0,0.5); border: 1px solid var(--neon-blue); color: white; padding: 15px; font-size: 16px; border-radius: 8px; margin-bottom: 15px; outline: none; }
+input:focus { box-shadow: 0 0 15px rgba(0, 243, 255, 0.4); }
+
+/* --- TICKER SECTION --- */
+.ticker-container { position: absolute; bottom: 20px; width: 100%; overflow: hidden; border-top: 1px solid rgba(255,255,255,0.1); border-bottom: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.8); padding: 10px 0; }
+.ticker-title { text-align: center; font-size: 12px; color: var(--neon-green); font-weight: bold; margin-bottom: 5px; letter-spacing: 2px; }
+.ticker-wrap { width: 100%; overflow: hidden; white-space: nowrap; }
+.ticker-move { display: inline-block; animation: ticker 15s linear infinite; }
+.ticker-item { display: inline-block; padding: 0 20px; font-size: 15px; font-weight: bold; }
+.ticker-item span { color: var(--neon-green); text-shadow: 0 0 10px var(--neon-green); }
+@keyframes ticker { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
+
+/* --- EXISTING UI STYLES --- */
+#splash-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-dark); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; transition: opacity 0.8s ease-out; }
+.splash-logo { font-family: 'Orbitron', sans-serif; font-size: 38px; font-weight: 900; color: transparent; -webkit-text-stroke: 1px var(--neon-pink); text-shadow: 0 0 20px rgba(255, 0, 127, 0.5); opacity: 0; animation: slideUpFade 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+.splash-logo span { color: var(--neon-blue); -webkit-text-stroke: 0; }
+.splash-text { color: var(--neon-pink); margin-top: 15px; font-weight: 700; letter-spacing: 2px; font-size: 12px; }
+@keyframes slideUpFade { 0% { opacity: 0; transform: translateY(50px) scale(0.9); } 50% { opacity: 1; transform: translateY(-10px) scale(1.05); } 100% { opacity: 1; transform: translateY(0) scale(1); } }
+#main-app { padding: 20px; height: 100vh; overflow-y: auto; animation: fadeInApp 1s ease-in; }
+@keyframes fadeInApp { from { opacity: 0; } to { opacity: 1; } }
+header { text-align: center; margin-bottom: 25px; font-family: 'Orbitron', sans-serif; }
+header h1 { font-size: 26px; color: var(--text-main); text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 0 10px var(--neon-pink); }
+header h1 span { color: var(--neon-pink); }
+.badges { display: flex; justify-content: center; gap: 10px; margin-top: 10px; }
+.badge { background: rgba(0, 243, 255, 0.1); border: 1px solid var(--neon-blue); color: var(--neon-blue); padding: 4px 10px; font-size: 12px; font-weight: 700; border-radius: 4px; box-shadow: 0 0 10px rgba(0, 243, 255, 0.2); }
+.badge.premium { border-color: var(--neon-green); color: var(--neon-green); }
+.control-panel { background: var(--bg-card); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 16px; padding: 20px; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+.input-group { margin-bottom: 15px; }
+.input-group label { display: block; color: var(--text-dim); font-size: 14px; margin-bottom: 8px; text-transform: uppercase; }
+select { width: 100%; background: rgba(0,0,0,0.5); border: 1px solid rgba(255, 0, 127, 0.3); color: var(--text-main); padding: 12px 15px; font-size: 16px; border-radius: 8px; outline: none; }
+.btn-generate { width: 100%; background: linear-gradient(45deg, var(--neon-pink), #ff004c); color: white; border: none; padding: 18px; font-size: 20px; font-weight: 800; font-family: 'Orbitron', sans-serif; border-radius: 12px; text-transform: uppercase; cursor: pointer; box-shadow: 0 0 20px rgba(255, 0, 127, 0.4); margin-top: 10px; transition: transform 0.2s; }
+.btn-generate:active { transform: scale(0.96); }
+.scanner-container { display: none; text-align: center; margin: 30px 0; }
+.radar { width: 80px; height: 80px; border-radius: 50%; border: 2px solid var(--neon-blue); margin: 0 auto; position: relative; overflow: hidden; box-shadow: 0 0 20px rgba(0, 243, 255, 0.3); }
+.radar::before { content: ''; position: absolute; top: 50%; left: 50%; width: 40px; height: 40px; background: linear-gradient(45deg, transparent 50%, rgba(0, 243, 255, 0.8) 100%); transform-origin: 0% 0%; animation: scan 1.5s linear infinite; }
+@keyframes scan { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+.scan-text { color: var(--neon-blue); margin-top: 15px; font-weight: 700; }
+.result-box { display: none; text-align: center; background: var(--bg-card); border-radius: 16px; padding: 30px 20px; border: 1px solid rgba(255, 255, 255, 0.05); margin-top: 20px; }
+.signal-text { font-family: 'Orbitron', sans-serif; font-size: 35px; font-weight: 900; margin-bottom: 5px; }
+.signal-UP { color: var(--neon-green); text-shadow: 0 0 20px rgba(0, 255, 102, 0.5); animation: pulseUp 1.5s infinite; }
+.signal-DOWN { color: var(--neon-red); text-shadow: 0 0 20px rgba(255, 51, 51, 0.5); animation: pulseDown 1.5s infinite; }
+@keyframes pulseUp { 0%, 100% { text-shadow: 0 0 10px rgba(0, 255, 102, 0.4); } 50% { text-shadow: 0 0 30px rgba(0, 255, 102, 0.8); } }
+@keyframes pulseDown { 0%, 100% { text-shadow: 0 0 10px rgba(255, 51, 51, 0.4); } 50% { text-shadow: 0 0 30px rgba(255, 51, 51, 0.8); } }
+.accuracy { color: var(--text-dim); font-size: 16px; font-weight: 700; }
